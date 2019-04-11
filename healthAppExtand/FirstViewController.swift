@@ -9,7 +9,10 @@
 import UIKit
 
 class FirstViewController: UIViewController {
-
+    @IBOutlet weak var tableView: UITableView!
+    @IBAction func updateWalkInfo(_ sender: UIButton) {
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
