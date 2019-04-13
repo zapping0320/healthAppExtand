@@ -9,8 +9,9 @@
 import UIKit
 import HealthKit
 
-class SecondViewController: UIViewController {
-
+class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+    @IBOutlet weak var tableView: UITableView!
+    
     let hkStore: HKHealthStore = HKHealthStore()
     var hkAvaiable = false
     
@@ -45,6 +46,20 @@ class SecondViewController: UIViewController {
             }
             
         })
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "boyMassCell", for: indexPath)
+        
+        cell.textLabel?.text = "BodyMass Section \(indexPath.section) Row \(indexPath.row)"
+        
+        return cell
+        
     }
 
 }
