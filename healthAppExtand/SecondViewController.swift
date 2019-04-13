@@ -7,14 +7,45 @@
 //
 
 import UIKit
+import HealthKit
 
 class SecondViewController: UIViewController {
 
+    let hkStore: HKHealthStore = HKHealthStore()
+    var hkAvaiable = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        if(!hkAvaiable)
+        {
+            getAuth()
+        }
     }
 
+    func getAuth() {
+        let hkWriteData = Set(arrayLiteral:
+            HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
+        
+        let hkReadData = Set(arrayLiteral:
+            HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
+        
+        if !HKHealthStore.isHealthDataAvailable() {
+            self.hkAvaiable = false
+        }
+        
+        hkStore.requestAuthorization(toShare: hkWriteData, read: hkReadData, completion: {
+            (success, error) -> Void in
+            if success {
+                print("Authorization complete")
+                 self.hkAvaiable = true
+                //self.fetchWeightData()
+            } else {
+                print("Authorization error: \(error?.localizedDescription)")
+                 self.hkAvaiable = false
+            }
+            
+        })
+    }
 
 }
 
