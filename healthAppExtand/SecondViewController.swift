@@ -73,7 +73,22 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.hkStore .execute(sampleQuery)
         
     }
-
+    @IBAction func addWeightInfo(_ sender: Any) {
+        
+        let weightSample = HKQuantitySample(type: HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!, quantity: HKQuantity(unit: HKUnit(from: "kg"), doubleValue: 80.0), start: Date(), end: Date())
+        
+        self.hkStore.save(weightSample, withCompletion:
+            {
+                (success, error) -> Void in
+                if success {
+                    print("new weight info add success")
+                } else {
+                    print("new weight info add fail")
+                }
+        })
+        self.fetchWeightData()
+    }
+    
     func getAuth() {
         let hkWriteData = Set(arrayLiteral:
             HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
@@ -110,7 +125,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let weightCell = self.weightData[indexPath.row]
         
         //cell.textLabel?.text = "BodyMass Section \(indexPath.section) Row \(indexPath.row)"
-        cell.textLabel?.text = String(format:"%f", weightCell.quantity.doubleValue(for: HKUnit.init(from: .pound)))
+        cell.textLabel?.text = String(format:"%f", weightCell.quantity.doubleValue(for: HKUnit.init(from: .kilogram)))
         
         return cell
         
