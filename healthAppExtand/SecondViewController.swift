@@ -11,6 +11,7 @@ import HealthKit
 
 class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     @IBOutlet weak var tableView: UITableView!
+    var weightData:[HKQuantitySample] = [HKQuantitySample]()
     
     let hkStore: HKHealthStore = HKHealthStore()
     var hkAvaiable = false
@@ -27,16 +28,20 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         {
             getAuth()
         }
+        self.fetchWeightData()
     }
     
     @objc func updateTable(notification: Notification) {
         print(notification.object!)
-        let weightArray = notification.object as! Array<HKQuantitySample>
+        weightData = notification.object as! Array<HKQuantitySample>
         
-        // Find the HKQuantitySample with the largest quantity.
-        let maxSample = weightArray.max { a, b in a.quantity.doubleValue(for: HKUnit.init(from: .pound)) < b.quantity.doubleValue(for: HKUnit.init(from: .pound)) }
-        
+        self.tableView.reloadData()
 
+    }
+    
+    @IBAction func refreshBodyMass(_ sender: Any) {
+        self.fetchWeightData()
+        
     }
     
     func fetchWeightData() {
@@ -95,14 +100,17 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return self.weightData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "boyMassCell", for: indexPath)
         
-        cell.textLabel?.text = "BodyMass Section \(indexPath.section) Row \(indexPath.row)"
+        let weightCell = self.weightData[indexPath.row]
+        
+        //cell.textLabel?.text = "BodyMass Section \(indexPath.section) Row \(indexPath.row)"
+        cell.textLabel?.text = String(format:"%f", weightCell.quantity.doubleValue(for: HKUnit.init(from: .pound)))
         
         return cell
         
