@@ -12,12 +12,15 @@ import HealthKit
 class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     @IBOutlet weak var tableView: UITableView!
     var weightData:[HKQuantitySample] = [HKQuantitySample]()
+    private let dateFormatter = DateFormatter()
     
     let hkStore: HKHealthStore = HKHealthStore()
     var hkAvaiable = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        dateFormatter.dateFormat = "YYYY/MM/dd hh:mm"
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(updateTable(notification:)),
@@ -124,8 +127,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         let weightCell = self.weightData[indexPath.row]
         
-        //cell.textLabel?.text = "BodyMass Section \(indexPath.section) Row \(indexPath.row)"
-        cell.textLabel?.text = String(format:"%f", weightCell.quantity.doubleValue(for: HKUnit.init(from: .kilogram)))
+        cell.textLabel?.text = dateFormatter.string(from: weightCell.startDate) + " " + String(format:"%f", weightCell.quantity.doubleValue(for: HKUnit.init(from: .kilogram)))
         
         return cell
         
