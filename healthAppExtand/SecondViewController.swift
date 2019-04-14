@@ -17,10 +17,56 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateTable(notification:)),
+                                               name: NSNotification.Name(rawValue: "BodyMassDataAvailable"),
+                                               object: nil)
+        
         if(!hkAvaiable)
         {
             getAuth()
         }
+    }
+    
+    @objc func updateTable(notification: Notification) {
+        print(notification.object!)
+        let weightArray = notification.object as! Array<HKQuantitySample>
+        
+        // Find the HKQuantitySample with the largest quantity.
+        let maxSample = weightArray.max { a, b in a.quantity.doubleValue(for: HKUnit.init(from: .pound)) < b.quantity.doubleValue(for: HKUnit.init(from: .pound)) }
+        
+
+    }
+    
+    func fetchWeightData() {
+        print("Fetching weight data")
+        
+        let quantityType : Set = [HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!]
+        
+        //Fetch the last 7 days of bodymass.
+        
+        let startDate = Date.init(timeIntervalSinceNow: -7*24*60*60)
+        let endDate = Date()
+        
+        let predicate = HKQuery.predicateForSamples(withStart: startDate,
+                                                    end: endDate,
+                                                    options: .strictStartDate)
+        
+        let sampleQuery = HKSampleQuery.init(sampleType: quantityType.first!,
+                                             predicate: predicate,
+                                             limit: HKObjectQueryNoLimit,
+                                             sortDescriptors: nil,
+                                             resultsHandler: { (query, results, error) in
+                                                DispatchQueue.main.async(execute: {
+                                                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "BodyMassDataAvailable"),
+                                                                                    object: results as! [HKQuantitySample],
+                                                                                    userInfo: nil)
+                                                })
+        })
+        
+        self.hkStore .execute(sampleQuery)
+        
     }
 
     func getAuth() {
@@ -41,7 +87,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
                  self.hkAvaiable = true
                 //self.fetchWeightData()
             } else {
-                print("Authorization error: \(error?.localizedDescription)")
+                print("Authorization error: \(String(describing: error?.localizedDescription))")
                  self.hkAvaiable = false
             }
             
