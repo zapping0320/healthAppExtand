@@ -7,8 +7,13 @@
 //
 
 import UIKit
+import CoreMotion
 
 class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+    private let activityManager = CMMotionActivityManager()
+    private let pedometer = CMPedometer()
+    
+    
     @IBOutlet weak var tableView: UITableView!
     @IBAction func updateWalkInfo(_ sender: UIButton) {
     }
