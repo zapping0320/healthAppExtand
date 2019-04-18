@@ -12,6 +12,30 @@ import CoreMotion
 class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     private let activityManager = CMMotionActivityManager()
     private let pedometer = CMPedometer()
+    @IBOutlet weak var stepCount: UILabel!
+    @IBOutlet weak var activityTypeLabel: UILabel!
+    @IBOutlet weak var StartButton: UIButton!
+    
+    @IBAction func walkAction(_ sender: Any) {
+    }
+    private func startTrackingActivityType() {
+        activityManager.startActivityUpdates(to: OperationQueue.main) {
+            [weak self] (activity: CMMotionActivity?) in
+            
+            guard let activity = activity else { return }
+            DispatchQueue.main.async {
+                if activity.walking {
+                    self?.activityTypeLabel.text = "Walking"
+                } else if activity.stationary {
+                    self?.activityTypeLabel.text = "Stationary"
+                } else if activity.running {
+                    self?.activityTypeLabel.text = "Running"
+                } else if activity.automotive {
+                    self?.activityTypeLabel.text = "Automotive"
+                }
+            }
+        }
+    }
     
     
     @IBOutlet weak var tableView: UITableView!
