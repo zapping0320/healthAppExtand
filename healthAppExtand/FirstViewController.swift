@@ -12,16 +12,82 @@ import CoreMotion
 class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     private let activityManager = CMMotionActivityManager()
     private let pedometer = CMPedometer()
+    
+    private var shouldStartUpdating: Bool = false
+    private var startDate: Date? = nil
+    
     @IBOutlet weak var stepCount: UILabel!
     @IBOutlet weak var activityTypeLabel: UILabel!
     @IBOutlet weak var StartButton: UIButton!
     
     @IBAction func walkAction(_ sender: Any) {
+        shouldStartUpdating = !shouldStartUpdating
+        shouldStartUpdating ? (onStart()) : (onStop())
     }
+    
+    private func onStart() {
+        StartButton.setTitle("Stop", for: .normal)
+        startDate = Date()
+        checkAuthorizationStatus()
+        startUpdating()
+    }
+    
+    private func onStop() {
+        StartButton.setTitle("Start", for: .normal)
+        startDate = nil
+        stopUpdating()
+    }
+    
+    private func startUpdating() {
+        if CMMotionActivityManager.isActivityAvailable() {
+            startTrackingActivityType()
+        } else {
+            activityTypeLabel.text = "Not available"
+        }
+        
+        if CMPedometer.isStepCountingAvailable() {
+            startCountingSteps()
+        } else {
+            stepCount.text = "Not available"
+        }
+    }
+    
+    private func checkAuthorizationStatus() {
+        switch CMMotionActivityManager.authorizationStatus() {
+        case CMAuthorizationStatus.denied:
+            onStop()
+            activityTypeLabel.text = "Not available"
+            stepCount.text = "Not available"
+        default:break
+        }
+    }
+    
+    private func stopUpdating() {
+        activityManager.stopActivityUpdates()
+        pedometer.stopUpdates()
+        pedometer.stopEventUpdates()
+    }
+    
+    private func on(error: Error) {
+        //handle error
+    }
+    
+    private func updateStepsCountLabelUsing(startDate: Date) {
+        pedometer.queryPedometerData(from: startDate, to: Date()) {
+            [weak self] pedometerData, error in
+            if let error = error {
+                self?.on(error: error)
+            } else if let pedometerData = pedometerData {
+                DispatchQueue.main.async {
+                    self?.stepCount.text = String(describing: pedometerData.numberOfSteps)
+                }
+            }
+        }
+    }
+    
     private func startTrackingActivityType() {
         activityManager.startActivityUpdates(to: OperationQueue.main) {
             [weak self] (activity: CMMotionActivity?) in
-            
             guard let activity = activity else { return }
             DispatchQueue.main.async {
                 if activity.walking {
@@ -37,6 +103,17 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
+    private func startCountingSteps() {
+        pedometer.startUpdates(from: Date()) {
+            [weak self] pedometerData, error in
+            guard let pedometerData = pedometerData, error == nil else { return }
+            
+            DispatchQueue.main.async {
+                self?.stepCount.text = pedometerData.numberOfSteps.stringValue
+            }
+        }
+    }
+    
     
     @IBOutlet weak var tableView: UITableView!
     @IBAction func updateWalkInfo(_ sender: UIButton) {
@@ -44,7 +121,13 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        self.stepCount.text = "0"
+        self.activityTypeLabel.text = "-"
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        guard let startDate = startDate else { return }
+        updateStepsCountLabelUsing(startDate: startDate)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
