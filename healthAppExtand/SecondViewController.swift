@@ -77,19 +77,29 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
     @IBAction func addWeightInfo(_ sender: Any) {
-        
-        let weightSample = HKQuantitySample(type: HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!, quantity: HKQuantity(unit: HKUnit(from: "kg"), doubleValue: 80.0), start: Date(), end: Date())
-        
-        self.hkStore.save(weightSample, withCompletion:
-            {
-                (success, error) -> Void in
-                if success {
-                    print("new weight info add success")
-                } else {
-                    print("new weight info add fail")
-                }
+        let alert = UIAlertController(title: "", message: "Add Weight", preferredStyle: .alert)
+        alert.addTextField(configurationHandler: { (textField) in
+            textField.text = ""
         })
-        self.fetchWeightData()
+        alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { (updateAction) in
+            let weightText = alert.textFields!.first!.text!
+            let weight = Double(weightText)
+            let weightSample = HKQuantitySample(type: HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!, quantity: HKQuantity(unit: HKUnit(from: "kg"), doubleValue: weight!), start: Date(), end: Date())
+            
+            self.hkStore.save(weightSample, withCompletion:
+                {
+                    (success, error) -> Void in
+                    if success {
+                        print("new weight info add success")
+                    } else {
+                        print("new weight info add fail")
+                    }
+            })
+            self.fetchWeightData()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: false)
+       
     }
     
     func getAuth() {
