@@ -14,6 +14,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var weightData:[HKQuantitySample] = [HKQuantitySample]()
     private let dateFormatter = DateFormatter()
     
+    @IBOutlet weak var tempTextField: UITextField!
     let hkStore: HKHealthStore = HKHealthStore()
     var hkAvaiable = false
     
@@ -44,7 +45,10 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     @IBAction func refreshBodyMass(_ sender: Any) {
         self.fetchWeightData()
-        
+        guard let tempString = self.tempTextField.text, tempString.count > 5 else {
+            //alert
+            return
+        }
     }
     
     func fetchWeightData() {
@@ -140,6 +144,11 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.textLabel?.text = dateFormatter.string(from: weightCell.startDate) + " " + String(format:"%f", weightCell.quantity.doubleValue(for: HKUnit.init(from: .kilogram)))
         
         return cell
+        
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+     return true
         
     }
 

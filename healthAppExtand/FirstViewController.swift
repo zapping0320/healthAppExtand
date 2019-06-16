@@ -119,6 +119,10 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBAction func updateWalkInfo(_ sender: UIButton) {
     }
     
+    override func awakeFromNib() {
+        print("awakeFromNib")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.stepCount.text = "0"
@@ -128,6 +132,18 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewWillAppear(_ animated: Bool) {
         guard let startDate = startDate else { return }
         updateStepsCountLabelUsing(startDate: startDate)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("viewDidAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("viewWillDisappear")
+    }
+    
+    deinit {
+        print("deinit")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

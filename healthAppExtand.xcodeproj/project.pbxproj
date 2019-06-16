@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B1A912722B6F7E700D94EC3 /* CVViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B1A912622B6F7E700D94EC3 /* CVViewController.swift */; };
 		0B88A152225FF3EF0014E74C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B88A151225FF3EF0014E74C /* AppDelegate.swift */; };
 		0B88A154225FF3EF0014E74C /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B88A153225FF3EF0014E74C /* FirstViewController.swift */; };
 		0B88A156225FF3EF0014E74C /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B88A155225FF3EF0014E74C /* SecondViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B1A912622B6F7E700D94EC3 /* CVViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVViewController.swift; sourceTree = "<group>"; };
 		0B88A14E225FF3EF0014E74C /* healthAppExtand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = healthAppExtand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B88A151225FF3EF0014E74C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0B88A153225FF3EF0014E74C /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 				0B88A153225FF3EF0014E74C /* FirstViewController.swift */,
 				0B88A155225FF3EF0014E74C /* SecondViewController.swift */,
 				0B88A157225FF3EF0014E74C /* Main.storyboard */,
+				0B1A912622B6F7E700D94EC3 /* CVViewController.swift */,
 				0B88A15A225FF3F60014E74C /* Assets.xcassets */,
 				0B88A15C225FF3F60014E74C /* LaunchScreen.storyboard */,
 				0B88A15F225FF3F60014E74C /* Info.plist */,
@@ -158,6 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B88A156225FF3EF0014E74C /* SecondViewController.swift in Sources */,
+				0B1A912722B6F7E700D94EC3 /* CVViewController.swift in Sources */,
 				0B88A152225FF3EF0014E74C /* AppDelegate.swift in Sources */,
 				0B88A154225FF3EF0014E74C /* FirstViewController.swift in Sources */,
 			);
